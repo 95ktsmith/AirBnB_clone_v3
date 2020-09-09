@@ -5,6 +5,8 @@ Module for Cities
 
 from api.v1.views import app_views
 from flask import Flask, jsonify, request, abort, make_response
+from models.state import State
+from models.city import City
 import models
 
 
@@ -14,12 +16,12 @@ def city_all(state_id):
     Lists all cities related to a specified city id.
     Raises 404 error if city with given id is not found.
     """
-    state = models.storage.get("State", state_id)
+    state = models.storage.get(State, state_id)
     if state is None:
         abort(404)
 
     city_holder = []
-    for city in state.cities():
+    for city in state.cities:
         city_holder.append(city.to_dict())
     return_holder = jsonify(city_holder)
     return return_holder
@@ -31,7 +33,7 @@ def city_one(city_id):
     City object retrieved with 404 error handling
     when city_id is not linked to any City object
     """
-    city_one = models.storage.get("City", city_id)
+    city_one = models.storage.get(City, city_id)
     if city_one is None:
         abort(404)
     return_holder = jsonify(city_one.to_dict())
@@ -56,11 +58,14 @@ def city_delete(city_id):
     return return_holder
 
 
-@app_views.route('/cities', strict_slashes=False, methods=['POST'])
-def city_create():
+@app_views.route('/states/<state_id>/cities',
+                 strict_slashes=False,
+                 methods=['POST'])
+def city_create(state_id):
     """
     City created with specific parameters:
     - Use Flask's request.get_json to turn HTTP body request to dict
+    - If state_id is not linked to any state object, raise error 404
     - If HTTP body request isn't valid JSON raise error 400 w/ message
     - If dict doesn't contain key name raise error 400 w/ message
     Returns: New City with status code 201
@@ -72,6 +77,9 @@ def city_create():
     if "name" not in request_help:
         return_holder = jsonify(error="Missing name")
         return make_response(return_holder, 400)
+    if models.storage.get(State, state_id) is None:
+        abort(404)
+    request_help['state_id'] = state_id
     create_help = models.city.City(**request_help)
     create_help.save()
     return_holder = jsonify(create_help.to_dict())
