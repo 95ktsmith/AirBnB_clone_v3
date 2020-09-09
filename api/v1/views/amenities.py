@@ -99,4 +99,4 @@ def amenity_update(amenity_id):
             setattr(update_help, k_ey, v_al)
         update_help.save()
         return_holder = jsonify(update_help.to_dict())
-        return return_holder
+    return return_holder
