@@ -22,7 +22,7 @@ def user_all():
     return return_holder
 
 
-@app_views.route('/users/<user_id>', strict_slashes=False, 
+@app_views.route('/users/<user_id>', strict_slashes=False,
                  methods=['GET'])
 def user_one(user_id):
     """
