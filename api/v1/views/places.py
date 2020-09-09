@@ -7,17 +7,25 @@ from api.v1.views import app_views
 from flask import Flask, jsonify, request, abort, make_response
 from models.state import State
 from models.city import City
+from models.place import Place
 import models
 
 
-@app_views.route('/places', strict_slashes=False, methods=['GET'])
+@app_views.route('/cities/<city_id>/places',
+                 strict_slashes=False,
+                 methods=['GET'])
 def place_all(city_id):
     """
     Place objects listed in their entirety
     """
+    city = models.storage.get(City, city_id)
+    if city is None:
+        abort(404)
+
     place_holder = []
-    for place in models.storage.all("Place").values():
-        place_holder.append(place.to_dict())
+    for place in models.storage.all(Place).values():
+        if place.city_id == city.id:
+            place_holder.append(place)
     return_holder = jsonify(place_holder)
     return return_holder
 
@@ -54,7 +62,9 @@ def place_delete(place_id):
     return return_holder
 
 
-@app_views.route('/places', strict_slashes=False, methods=['POST'])
+@app_views.route('/cities/<city_id>/places',
+                 strict_slashes=False,
+                 methods=['POST'])
 def place_create(city_id):
     """
     Place created with specific parameters:
@@ -63,6 +73,9 @@ def place_create(city_id):
     - If dict doesn't contain key email raise error 400 w/ message
     Returns: New Place with status code 201
     """
+    city = models.storage.get(City, city_id)
+    if city is None:
+        abort(404)
     request_help = request.get_json()
     if request_help is None:
         return_holder = jsonify(error="Not a JSON")
@@ -73,6 +86,7 @@ def place_create(city_id):
     if "name" not in request_help:
         return_holder = jsonify(error="Missing name")
         return make_response(return_holder, 400)
+    request_help["city_id"] = city_id
     create_help = models.user.Place(**request_help)
     create_help.save()
     return_holder = jsonify(create_help.to_dict())
