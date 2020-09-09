@@ -11,7 +11,7 @@ import models
 
 
 @app_views.route('/places', strict_slashes=False, methods=['GET'])
-def place_all():
+def place_all(id):
     """
     Place objects listed in their entirety
     """
@@ -24,7 +24,7 @@ def place_all():
 
 @app_views.route('/places/<place_id>', strict_slashes=False,
                  methods=['GET'])
-def place_one(place_id):
+def place_one(id):
     """
     Place object retrieved with 404 error handling
     when place_id is not linked to any Place object
@@ -39,7 +39,7 @@ def place_one(place_id):
 @app_views.route('/places/<place_id>',
                  strict_slashes=False,
                  methods=['DELETE'])
-def place_delete(place_id):
+def place_delete(id):
     """
     Place object deleted with 404 error handling
     if place_id is not linked to any Place object
@@ -55,7 +55,7 @@ def place_delete(place_id):
 
 
 @app_views.route('/places', strict_slashes=False, methods=['POST'])
-def place_create():
+def place_create(id):
     """
     Place created with specific parameters:
     - Use Flask's request.get_json to turn HTTP body request to dict
@@ -82,7 +82,7 @@ def place_create():
 @app_views.route('/places/<string:place_id>',
                  strict_slashes=False,
                  methods=['PUT'])
-def place_update(place_id):
+def place_update(id):
     """
     Place object updated with specific parameters:
     - If place_id is not linked to any User object raise 404 error
