@@ -82,7 +82,7 @@ class DBStorage:
         if len(self.all(cls).values()) == 0:
             return None
         for obj in self.all(cls).values():
-            if obj.__class__ == cls and obj.id == id:
+            if obj.id == id:
                 return obj
         return None
 
