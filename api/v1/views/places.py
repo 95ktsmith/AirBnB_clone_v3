@@ -27,6 +27,10 @@ def place_all(city_id):
     for place in models.storage.all(Place).values():
         if place.city_id == city.id:
             place_holder.append(place.to_dict())
+
+    if place_holder is None:
+        abort(404)
+
     return_holder = jsonify(place_holder)
     return return_holder
 
