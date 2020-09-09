@@ -33,7 +33,9 @@ def state_one(state_id):
     return return_holder
 
 
-@app_views.route('/states/<state_id>', strict_slashes=False, methods=['DELETE'])
+@app_views.route('/states/<state_id>',
+                 strict_slashes=False,
+                 methods=['DELETE'])
 def state_delete(state_id):
     """
     State object deleted with 404 error handling
@@ -71,7 +73,9 @@ def state_create():
     return make_response(return_holder, 201)
 
 
-@app_views.route('/states/<string:state_id>', strict_slashes=False, methods=['PUT'])
+@app_views.route('/states/<string:state_id>',
+                 strict_slashes=False,
+                 methods=['PUT'])
 def state_update(state_id):
     """
     State object updated with specific parameters:
