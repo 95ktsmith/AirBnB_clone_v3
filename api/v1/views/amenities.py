@@ -22,7 +22,7 @@ def amenity_all():
     return return_holder
 
 
-@app_views.route('/amenities/<amenity_id>', strict_slashes=False, 
+@app_views.route('/amenities/<amenity_id>', strict_slashes=False,
                  methods=['GET'])
 def amenity_one(amenity_id):
     """
