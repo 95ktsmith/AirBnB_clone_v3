@@ -113,7 +113,7 @@ def place_update(place_id):
     if request_help is None:
         return_holder = jsonify(error="Not a JSON")
         return make_response(return_holder, 400)
-    ignore_these = ["id", "created_at", "updated_at"]
+    ignore_these = ["id", "user_id", "city_id", "created_at", "updated_at"]
     update_help = models.storage.get("Place", place_id)
     if update_help is None:
         abort(404)
