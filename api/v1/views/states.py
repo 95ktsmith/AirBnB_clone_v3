@@ -41,7 +41,7 @@ def state_delete(state_id):
     Return: Empty dictionary with status code 200
     """
     remove_help = models.storage.get("State", state_id)
-    if remove_help if None:
+    if remove_help is None:
         abort(404)
     remove_help.delete()
     models.storage.save()
