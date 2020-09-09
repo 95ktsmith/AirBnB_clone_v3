@@ -8,6 +8,7 @@ from flask import Flask, jsonify, request, abort, make_response
 from models.state import State
 from models.city import City
 from models.place import Place
+from models.user import User
 import models
 
 
@@ -73,9 +74,9 @@ def place_create(city_id):
     - If dict doesn't contain key email raise error 400 w/ message
     Returns: New Place with status code 201
     """
-    city = models.storage.get(City, city_id)
-    if city is None:
+    if models.storage.get(City, city_id) is None:
         abort(404)
+
     request_help = request.get_json()
     if request_help is None:
         return_holder = jsonify(error="Not a JSON")
@@ -83,14 +84,16 @@ def place_create(city_id):
     if "user_id" not in request_help:
         return_holder = jsonify(error="Missing user_id")
         return make_response(return_holder, 400)
+    if models.storage.get(User, request_help['user_id']) is None:
+        abort(404)
     if "name" not in request_help:
         return_holder = jsonify(error="Missing name")
         return make_response(return_holder, 400)
     request_help["city_id"] = city_id
-    create_help = models.user.Place(**request_help)
+    create_help = models.place.Place(**request_help)
     create_help.save()
     return_holder = jsonify(create_help.to_dict())
-    return make_response(return_holder, 201)
+    return make_response(return_holder, 200)
 
 
 @app_views.route('/places/<string:place_id>',
