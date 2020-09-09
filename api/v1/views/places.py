@@ -26,7 +26,7 @@ def place_all(city_id):
     place_holder = []
     for place in models.storage.all(Place).values():
         if place.city_id == city.id:
-            place_holder.append(place)
+            place_holder.append(place.to_dict())
     return_holder = jsonify(place_holder)
     return return_holder
 
@@ -38,7 +38,7 @@ def place_one(place_id):
     Place object retrieved with 404 error handling
     when place_id is not linked to any Place object
     """
-    place_one = models.storage.get("Place", place_id)
+    place_one = models.storage.get(Place, place_id)
     if place_one is None:
         abort(404)
     return_holder = jsonify(place_one.to_dict())
