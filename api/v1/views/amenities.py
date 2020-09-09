@@ -5,6 +5,8 @@ Module for Amenities
 
 from api.v1.views import app_views
 from flask import Flask, jsonify, request, abort, make_response
+from models.state import State
+from models.city import City
 import models
 
 
@@ -20,7 +22,8 @@ def amenity_all():
     return return_holder
 
 
-@app_views.route('/amenities/<amenity_id>', strict_slashes=False, methods=['GET'])
+@app_views.route('/amenities/<amenity_id>', strict_slashes=False, 
+                 methods=['GET'])
 def amenity_one(amenity_id):
     """
     Amenity object retrieved with 404 error handling
