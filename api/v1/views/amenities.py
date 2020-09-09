@@ -11,7 +11,7 @@ import models
 @app_views.route('/amenities', strict_slashes=False, methods=['GET'])
 def amenity_all():
     """
-    State objects listed in their entirety
+    Amenity objects listed in their entirety
     """
     state_holder = []
     for state in models.storage.all("Amenity").values():
@@ -23,13 +23,13 @@ def amenity_all():
 @app_views.route('/amenities/<amenity_id>', strict_slashes=False, methods=['GET'])
 def amenity_one(amenity_id):
     """
-    State object retrieved with 404 error handling
-    when state_id is not linked to any State object
+    Amenity object retrieved with 404 error handling
+    when amenity_id is not linked to any Amenity object
     """
     amenity_one = models.storage.get("Amenity", amenity_id)
     if amenity_one is None:
         abort(404)
-    return_holder = jsonify(amenity_one.to_dict())
+        return_holder = jsonify(amenity_one.to_dict())
     return return_holder
 
 
@@ -38,8 +38,8 @@ def amenity_one(amenity_id):
                  methods=['DELETE'])
 def amenity_delete(amenity_id):
     """
-    State object deleted with 404 error handling
-    if state_id is not linked to any State object
+    Amenity object deleted with 404 error handling
+    if amenity_id is not linked to any Amenity object
     Return: Empty dictionary with status code 200
     """
     remove_help = models.storage.get("Amenity", amenity_id)
@@ -54,11 +54,11 @@ def amenity_delete(amenity_id):
 @app_views.route('/amenities', strict_slashes=False, methods=['POST'])
 def amenity_create():
     """
-    State created with specific parameters:
+    Amenity created with specific parameters:
     - Use Flask's request.get_json to turn HTTP body request to dict
     - If HTTP body request isn't valid JSON raise error 400 w/ message
     - If dict doesn't contain key name raise error 400 w/ message
-    Returns: New State with status code 201
+    Returns: New Amenity with status code 201
     """
     request_help = request.get_json()
     if request_help is None:
@@ -78,13 +78,13 @@ def amenity_create():
                  methods=['PUT'])
 def amenity_update(amenity_id):
     """
-    State object updated with specific parameters:
-    - If state_id is not linked to any State object raise 404 error
+    Amenity object updated with specific parameters:
+    - If amenity_id is not linked to any Amenity object raise 404 error
     - Use Flask's request.get_json to turn HTTP body request to dict
     - If HTTP body request isn't valid JSON raise error 400 w/ message
-    - Update State object with all key-value pairs of the dict
+    - Update Amenity object with all key-value pairs of the dict
     - Ignore keys: id, created_at and updated_at
-    Return: State object with the status code 200
+    Return: Amenity object with the status code 200
     """
     request_help = request.get_json()
     if request_help is None:
