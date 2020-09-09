@@ -29,7 +29,7 @@ def amenity_one(amenity_id):
     amenity_one = models.storage.get("Amenity", amenity_id)
     if amenity_one is None:
         abort(404)
-        return_holder = jsonify(amenity_one.to_dict())
+    return_holder = jsonify(amenity_one.to_dict())
     return return_holder
 
 
@@ -99,4 +99,4 @@ def amenity_update(amenity_id):
             setattr(update_help, k_ey, v_al)
         update_help.save()
         return_holder = jsonify(update_help.to_dict())
-    return return_holder
+        return return_holder
