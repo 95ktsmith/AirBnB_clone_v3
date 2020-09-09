@@ -36,7 +36,7 @@ def user_one(user_id):
     return return_holder
 
 
-@app_views.route('/user/<user_id>',
+@app_views.route('/users/<user_id>',
                  strict_slashes=False,
                  methods=['DELETE'])
 def user_delete(user_id):
@@ -69,6 +69,9 @@ def user_create():
         return make_response(return_holder, 400)
     if "email" not in request_help:
         return_holder = jsonify(error="Missing email")
+        return make_response(return_holder, 400)
+    if "password" not in request_help:
+        return_holder = jsonify(error="Missing password")
         return make_response(return_holder, 400)
     create_help = models.user.User(**request_help)
     create_help.save()
