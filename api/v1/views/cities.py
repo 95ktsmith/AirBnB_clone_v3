@@ -10,7 +10,9 @@ from models.city import City
 import models
 
 
-@app_views.route('/<state_id>/cities', strict_slashes=False, methods=['GET'])
+@app_views.route('/states/<state_id>/cities',
+                 strict_slashes=False,
+                 methods=['GET'])
 def city_all(state_id):
     """
     Lists all cities related to a specified city id.
