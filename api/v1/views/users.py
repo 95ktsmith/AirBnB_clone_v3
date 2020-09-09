@@ -17,7 +17,7 @@ def user_all():
     """
     user_holder = []
     for user in models.storage.all("User").values():
-        user_holder.append(state.to_dict())
+        user_holder.append(user.to_dict())
     return_holder = jsonify(user_holder)
     return return_holder
 
