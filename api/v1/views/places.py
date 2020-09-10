@@ -153,9 +153,9 @@ def places_search():
     else:
         if "states" in request_help and len(request_help["states"]) != 0:
             """ Get all matching all cities in these states """
-            for state_name in request_help["states"]:
+            for state_id in request_help["states"]:
                 for state in models.storage.all(State).values():
-                    if state.name == state_name:
+                    if state.id == state_id:
                         for city in state.cities:
                             for place in models.storage.all(Place).values():
                                 if place.city_id == city.id:
@@ -163,9 +163,9 @@ def places_search():
 
         if "cities" in request_help and len(request_help["cities"]) != 0:
             """ Get all matching these cities """
-            for city_name in request_help["cities"]:
+            for city_id_l in request_help["cities"]:
                 for city in models.storage.all(City).values():
-                    if city.name == city_name:
+                    if city.id == city_id_l:
                         for place in models.storage.all(Place).values():
                             if place.city_id == city.id and\
                                     place not in places_holder:
