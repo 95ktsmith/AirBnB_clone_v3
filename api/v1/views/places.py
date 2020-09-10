@@ -9,6 +9,7 @@ from models.state import State
 from models.city import City
 from models.place import Place
 from models.user import User
+from models.amenity import Amenity
 import models
 
 
@@ -118,7 +119,7 @@ def place_update(place_id):
         return_holder = jsonify(error="Not a JSON")
         return make_response(return_holder, 400)
     ignore_these = ["id", "user_id", "city_id", "created_at", "updated_at"]
-    update_help = models.storage.get("Place", place_id)
+    update_help = models.storage.get(Place, place_id)
     if update_help is None:
         abort(404)
     for k_ey, v_al in request_help.items():
@@ -127,3 +128,62 @@ def place_update(place_id):
         update_help.save()
         return_holder = jsonify(update_help.to_dict())
         return return_holder
+
+
+@app_views.route('/places_search', strict_slashes=False, methods=['POST'])
+def places_search():
+    """ Returns a list of places based on state, city, and/or amenity """
+    request_help = request.get_json()
+    if request_help is None:
+        return_holder = jsonify(error="Not a JSON")
+        return make_response(return_holder, 400)
+    places_holder = []
+    places_return = []
+    if len(request_help.keys()) == 0 or\
+        (("states" not in request_help or
+          len(request_help["states"]) == 0) and
+         ("cities" not in request_help or
+          len(request_help["cities"]) == 0)):
+        for place in models.storage.all(Place).values():
+            places_holder.append(place)
+        if "amenities" not in request_help or\
+                len(request_help["amenities"]) == 0:
+            for place in places_holder:
+                places_return.append(place.to_dict())
+            return jsonify(places_return)
+    else:
+        if "states" in request_help and len(request_help["states"]) != 0:
+            """ Get all matching all cities in these states """
+            for state_id in request_help["states"]:
+                for state in models.storage.all(State).values():
+                    if state.id == state_id:
+                        for city in state.cities:
+                            for place in models.storage.all(Place).values():
+                                if place.city_id == city.id and\
+                                        place not in places_holder:
+                                    places_holder.append(place)
+
+        if "cities" in request_help and len(request_help["cities"]) != 0:
+            """ Get all matching these cities """
+            for city_id_l in request_help["cities"]:
+                for city in models.storage.all(City).values():
+                    if city.id == city_id_l:
+                        for place in models.storage.all(Place).values():
+                            if place.city_id == city.id and\
+                                    place not in places_holder:
+                                places_holder.append(place)
+
+    if "amenities" in request_help and len(request_help["amenities"]) != 0:
+        amenities = []
+        for amenitiy_id in request_help["amenities"]:
+            for amenity in models.storage.all(Amenity).values():
+                if amenity.id == amenity_id and amenity not in amenities:
+                    amenities.append(amenity)
+        for place in places_holder:
+            if all(amenity in place.amenities for amenity in amenities):
+                places_return.append(place.to_dict())
+        return jsonify(places_return)
+    else:
+        for place in places_holder:
+            places_return.append(place.to_dict())
+        return jsonify(places_return)
