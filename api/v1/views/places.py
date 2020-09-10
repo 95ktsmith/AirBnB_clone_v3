@@ -127,3 +127,56 @@ def place_update(place_id):
         update_help.save()
         return_holder = jsonify(update_help.to_dict())
         return return_holder
+
+
+@app_views.route('/places_search', strict_slashes=False, methods=['POST'])
+def places_search():
+    """ Returns a list of places based on state, city, and/or amenity """
+    request_help = request.get_json()
+    if request_help is None:
+        return_holder = jsonify(error="Not a JSON")
+        return make_response(return_holder, 400)
+    places_holder = []
+    places_return = []
+    if len(request_help.keys()) == 0 or\
+        (("states" not in request_help or
+          len(request_help["states"]) == 0) and
+         ("cities" not in request_help or
+          len(request_help["cities"]) == 0)):
+        for place in models.storage.all(Place).values():
+            places_holder.append(place)
+        if "amenities" not in request_help or\
+        len(request_help["amenities"]) == 0:
+            for place in places_holder:
+                places_return.append(place.to_dict())
+            return jsonify(places_return)
+    else:
+        if "states" in request_help and len(request_help["states"]) != 0:
+            """ Get all matching all cities in these states """
+            for state_name in request_help["states"]:
+                for state in models.storage.all(State).values():
+                    if state.name == state_name:
+                        for city in state.cities:
+                            for place in models.storage.all(Place).values():
+                                if place.city_id == city.id:
+                                    places_holder.append(place)
+
+        if "cities" in request_help and len(request_help["cities"]) != 0:
+            """ Get all matching these cities """
+            for city_name in request_help["cities"]:
+                for city in models.storage.all(City).values():
+                    if city.name == city_name:
+                        for place in models.storage.all(Place).values():
+                            if place.city_id == city.id and\
+                            place not in places_holder:
+                                places_holder.append(place)
+
+    if "amenities" in request_help and len(request_help["amenities"] != 0):
+        for place in places_holder:
+            if all(a in place.amenities for a in request_help["amenities"]):
+                places_return.append(place.to_dict())
+        return jsonify(places_return)
+    else:
+        for place in places_holder:
+            places_return.append(place.to_dict())
+        return jsonify(places_return)
