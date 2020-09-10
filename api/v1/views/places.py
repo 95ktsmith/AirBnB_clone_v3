@@ -146,7 +146,7 @@ def places_search():
         for place in models.storage.all(Place).values():
             places_holder.append(place)
         if "amenities" not in request_help or\
-        len(request_help["amenities"]) == 0:
+                len(request_help["amenities"]) == 0:
             for place in places_holder:
                 places_return.append(place.to_dict())
             return jsonify(places_return)
@@ -168,7 +168,7 @@ def places_search():
                     if city.name == city_name:
                         for place in models.storage.all(Place).values():
                             if place.city_id == city.id and\
-                            place not in places_holder:
+                                    place not in places_holder:
                                 places_holder.append(place)
 
     if "amenities" in request_help and len(request_help["amenities"] != 0):
