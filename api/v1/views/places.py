@@ -9,6 +9,7 @@ from models.state import State
 from models.city import City
 from models.place import Place
 from models.user import User
+from models.amenity import Amenity
 import models
 
 
@@ -171,9 +172,14 @@ def places_search():
                                     place not in places_holder:
                                 places_holder.append(place)
 
-    if "amenities" in request_help and len(request_help["amenities"] != 0):
+    if "amenities" in request_help and len(request_help["amenities"]) != 0:
+        amenities = []
+        for amenitiy_id in request_help["amenities"]:
+            for amenity in models.storage.all(Amenity).values():
+                if amenity.id == amenity_id:
+                    amenities.append(amenity)
         for place in places_holder:
-            if all(a in place.amenities for a in request_help["amenities"]):
+            if all(amenity in place.amenities for amenity in amenities):
                 places_return.append(place.to_dict())
         return jsonify(places_return)
     else:
