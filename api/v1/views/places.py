@@ -159,7 +159,8 @@ def places_search():
                     if state.id == state_id:
                         for city in state.cities:
                             for place in models.storage.all(Place).values():
-                                if place.city_id == city.id:
+                                if place.city_id == city.id and\
+                                        place not in places_holder:
                                     places_holder.append(place)
 
         if "cities" in request_help and len(request_help["cities"]) != 0:
@@ -176,7 +177,7 @@ def places_search():
         amenities = []
         for amenitiy_id in request_help["amenities"]:
             for amenity in models.storage.all(Amenity).values():
-                if amenity.id == amenity_id:
+                if amenity.id == amenity_id and amenity not in amenities:
                     amenities.append(amenity)
         for place in places_holder:
             if all(amenity in place.amenities for amenity in amenities):
