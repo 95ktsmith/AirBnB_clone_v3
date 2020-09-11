@@ -13,7 +13,7 @@ import models
 import os
 
 
-@app_views.route('/places/<string:place_id>/amenities', 
+@app_views.route('/places/<string:place_id>/amenities',
                  strict_slashes=False, methods=['GET'])
 def pl_am_all(place_id):
     """
@@ -36,7 +36,7 @@ def pl_am_all(place_id):
     return return_helper
 
 
-@app_views.route('/places/<string:place_id>/amenities/<string:amenity_id>', 
+@app_views.route('/places/<string:place_id>/amenities/<string:amenity_id>',
                  strict_slashes=False, methods=['DELETE'])
 def pl_am_delete(place_id, amenity_id):
     """
