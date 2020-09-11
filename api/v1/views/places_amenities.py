@@ -60,7 +60,7 @@ def pl_am_delete(place_id, amenity_id):
 
     amenity_obj.delete(amenity_obj)
     amenity_obj.save()
-    return_helper = jsonify({})
+    return_helper = jsonify({}, 200)
     return return_helper
 
 
@@ -88,9 +88,9 @@ def pl_am_post(place_id, amenity_id):
         amenity_obj = place_holder.amenity_ids
 
     if amen_holder in amenity_obj:
-        return_helper = jsonify(amen_holder.to_dict())
+        return_helper = jsonify(amen_holder.to_dict(), 200)
         return return_helper
     amenity_obj.append(amen_holder)
     amenity_obj.save()
-    return_helper = jsonify(amen_holder.to_dict())
+    return_helper = jsonify(amen_holder.to_dict(), 201)
     return return_helper
